@@ -1,0 +1,29 @@
+# Игнорировать зависимости
+node_modules/
+
+# Игнорировать локальные логи и временные файлы
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Игнорировать файлы сборки
+dist/
+build/
+
+# Игнорировать файлы кэша
+.cache/
+
+# Игнорировать локальные конфиги и секреты
+.env
+.env.local
+*.env
+
+# Игнорировать файлы редакторов
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Игнорировать macOS-файлы
+.DS_Store
