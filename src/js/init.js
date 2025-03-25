@@ -1,67 +1,66 @@
-import onChange from 'on-change';
 import { string } from 'yup';
+import initView from './view.js';
 
-const render = (state, formEl) => {
-  console.log(state);
+
+
+const errorMessages = {
+  network: {
+    error: 'Network Problems. Try again.',
+  },
+  notOneOf: {
+    error: 'RSS уже существует',
+  },
+  url: {
+    error: 'Ссылка должна быть валидным URL',
+  },
 };
 
 export default () => {
-  const state = {
+  const elements = {
+    form: document.querySelector('.rss-form'),
+    fields: {
+      url: document.getElementById('url-input'),
+    },
+    submitButton: document.querySelector('button[type="submit"]'),
+    feedback: document.querySelector('.feedback'),
+  };
+
+  const initialState = {
     formData: {
       url: '',
     },
-    errors: [],
+    error: '',
     process: "filling", // "processing", "failed", "success"
     feedList: ['https://lorem-rss.hexlet.app/feed']
   }
 
-  const formEl = document.querySelector('.rss-form');
-  const inputEl = document.getElementById('url-input');
-
-  const watchedState = onChange(state, () => {
-    render(state, formEl);
-  });
+  const state = initView(elements, initialState);
 
   const validateForm = () => {
-    const errors = [];
-
     const schema = string().url().notOneOf(state.feedList);
 
     return schema.validate(state.formData.url).then().catch((err) => {
-      switch (err.type) {
-        case 'notOneOf': {
-          errors.push('RSS уже существует');
-          break;
-        }
-        case 'url': {
-          errors.push('Ссылка должна быть валидным URL');
-          break;
-        }
-        default: {
-          throw 'Unknown validation error type!';
-        }
-      }
-
-      watchedState.errors = errors;
+      state.error = errorMessages[err.type].error;
     });
   }
 
-  inputEl.addEventListener('input', (e) => {
-    watchedState.formData.url = e.target.value;
+  elements.fields.url.addEventListener('input', (e) => {
+    state.formData.url = e.target.value.trim();
   });
 
-  formEl.addEventListener('submit', (e) => {
+  elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    state.process = 'processing'
+    state.error = '';
     
     validateForm().then(() => {
-      if (watchedState.errors.length > 0) {
-        watchedState.process = 'failed';
+      if (state.error !== '') {
+        state.process = 'failed';
         return;
-      } else {
-        
       }
 
-
+      state.process = 'success'
     });
   })
 };
