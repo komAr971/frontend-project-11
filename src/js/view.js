@@ -1,23 +1,23 @@
-import onChange from 'on-change';
+import onChange from "on-change";
 
-const render = (elements, state) => (path, value, prevValue) => {
+const render = (elements, state) => (path, value) => {
   console.log(state);
   switch (path) {
-    case 'process': {
+    case "process": {
       switch (value) {
-        case 'filling' : {
+        case "filling": {
           break;
         }
-        case 'processing': {
-          elements.feedback.textContent = '';
+        case "processing": {
+          elements.feedback.textContent = "";
           break;
         }
-        case 'failed': {
+        case "failed": {
           elements.feedback.textContent = state.error;
           break;
         }
-        case 'success': {
-          elements.feedback.textContent = '';
+        case "success": {
+          elements.feedback.textContent = "";
           break;
         }
         default: {
@@ -27,9 +27,9 @@ const render = (elements, state) => (path, value, prevValue) => {
       break;
     }
 
-    case 'errors': {
+    case "errors": {
       break;
-    };
+    }
 
     default:
       break;
@@ -39,4 +39,4 @@ const render = (elements, state) => (path, value, prevValue) => {
 export default (elements, state) => {
   const watchedState = onChange(state, render(elements, state));
   return watchedState;
-}
+};
