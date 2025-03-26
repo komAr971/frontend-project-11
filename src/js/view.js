@@ -1,6 +1,6 @@
 import onChange from "on-change";
 
-const render = (elements, state) => (path, value) => {
+const render = (elements, state, i18nInstance) => (path, value) => {
   console.log(state);
   switch (path) {
     case "process": {
@@ -13,7 +13,7 @@ const render = (elements, state) => (path, value) => {
           break;
         }
         case "failed": {
-          elements.feedback.textContent = state.error;
+          elements.feedback.textContent = state.errors.join("\n");
           break;
         }
         case "success": {
@@ -31,12 +31,25 @@ const render = (elements, state) => (path, value) => {
       break;
     }
 
+    case "lng": {
+      document.title = i18nInstance.t("title");
+      elements.title.textContent = i18nInstance.t("title");
+      elements.lead.textContent = i18nInstance.t("lead");
+      elements.fields.url.placeholder = i18nInstance.t("input.placeholder");
+      elements.label.textContent = i18nInstance.t("input.label");
+      elements.submitButton.textContent = i18nInstance.t("button");
+      elements.example.textContent = i18nInstance.t("example");
+      elements.createdBy.textContent = i18nInstance.t("created by");
+      elements.author.textContent = i18nInstance.t("author");
+      break;
+    }
+
     default:
       break;
   }
 };
 
-export default (elements, state) => {
-  const watchedState = onChange(state, render(elements, state));
+export default (elements, state, i18nInstance) => {
+  const watchedState = onChange(state, render(elements, state, i18nInstance));
   return watchedState;
 };
