@@ -1,19 +1,27 @@
-import { string } from "yup";
+import { string, setLocale } from "yup";
+import i18next from "i18next";
+
+import resources from "../locales/index.js";
 import initView from "./view.js";
 
-const errorMessages = {
-  network: {
-    error: "Network Problems. Try again.",
-  },
-  notOneOf: {
-    error: "RSS уже существует",
-  },
-  url: {
-    error: "Ссылка должна быть валидным URL",
-  },
-};
-
 export default () => {
+  const defaultLanguage = "ru";
+
+  const i18nInstance = i18next.createInstance();
+  i18nInstance.init({
+    lng: defaultLanguage,
+    resources,
+  });
+
+  setLocale({
+    mixed: {
+      notOneOf: i18nInstance.t("error.notOneOf"),
+    },
+    string: {
+      url: i18nInstance.t("error.url"),
+    },
+  });
+
   const elements = {
     form: document.querySelector(".rss-form"),
     fields: {
@@ -21,18 +29,27 @@ export default () => {
     },
     submitButton: document.querySelector('button[type="submit"]'),
     feedback: document.querySelector(".feedback"),
+    title: document.querySelector(".title"),
+    lead: document.querySelector(".lead"),
+    label: document.querySelector('label[for="url-input"]'),
+    example: document.querySelector(".example"),
+    author: document.querySelector(".author"),
+    createdBy: document.querySelector(".createdBy"),
   };
 
   const initialState = {
+    lng: "",
     formData: {
       url: "",
     },
-    error: "",
+    errors: [],
     process: "filling", // "processing", "failed", "success"
     feedList: ["https://lorem-rss.hexlet.app/feed"],
   };
 
-  const state = initView(elements, initialState);
+  const state = initView(elements, initialState, i18nInstance);
+
+  state.lng = defaultLanguage;
 
   const validateForm = () => {
     const schema = string().url().notOneOf(state.feedList);
@@ -41,7 +58,7 @@ export default () => {
       .validate(state.formData.url)
       .then()
       .catch((err) => {
-        state.error = errorMessages[err.type].error;
+        state.errors = err.errors;
       });
   };
 
@@ -53,10 +70,10 @@ export default () => {
     e.preventDefault();
 
     state.process = "processing";
-    state.error = "";
+    state.errors = [];
 
     validateForm().then(() => {
-      if (state.error !== "") {
+      if (state.errors.length > 0) {
         state.process = "failed";
         return;
       }
