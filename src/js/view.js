@@ -1,5 +1,4 @@
 import onChange from "on-change";
-import { setLocale } from "yup";
 
 const render = (elements, state, i18nInstance) => (path, value) => {
   console.log(state);
@@ -33,10 +32,12 @@ const render = (elements, state, i18nInstance) => (path, value) => {
     }
 
     case "lng": {
-      const active = elements.languageSelection.querySelector('.active');
-      active.classList.remove('active');
-      const current = elements.languageSelection.querySelector(`[data-lng="${value}"]`)
-      current.classList.add('active');
+      const active = elements.languageSelection.querySelector(".active");
+      active.classList.remove("active");
+      const current = elements.languageSelection.querySelector(
+        `[data-lng="${value}"]`,
+      );
+      current.classList.add("active");
 
       i18nInstance.changeLanguage(value).then(() => {
         document.title = i18nInstance.t("title");
@@ -48,7 +49,7 @@ const render = (elements, state, i18nInstance) => (path, value) => {
         elements.example.textContent = i18nInstance.t("example");
         elements.createdBy.textContent = i18nInstance.t("created by");
         elements.author.textContent = i18nInstance.t("author");
-      })
+      });
       break;
     }
 

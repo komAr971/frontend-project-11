@@ -1,8 +1,8 @@
 export default {
   translation: {
     languages: {
-      en: '🇬🇧 English',
-      ru: '🇷🇺 Русский',
+      en: "🇬🇧 English",
+      ru: "🇷🇺 Русский",
     },
     error: {
       notOneOf: "RSS уже существует",
