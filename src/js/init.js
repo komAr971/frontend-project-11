@@ -4,6 +4,14 @@ import i18next from "i18next";
 import resources from "../locales/index.js";
 import initView from "./view.js";
 
+const languages = ['ru', 'en'];
+
+const handleSwitchLanguage = (state) => (evt) => {
+  const { lng } = evt.target.dataset;
+
+  state.lng = lng;
+};
+
 export default () => {
   const defaultLanguage = "ru";
 
@@ -15,10 +23,10 @@ export default () => {
 
   setLocale({
     mixed: {
-      notOneOf: i18nInstance.t("error.notOneOf"),
+      notOneOf: () => i18nInstance.t("error.notOneOf"),
     },
     string: {
-      url: i18nInstance.t("error.url"),
+      url: () => i18nInstance.t("error.url"),
     },
   });
 
@@ -35,6 +43,7 @@ export default () => {
     example: document.querySelector(".example"),
     author: document.querySelector(".author"),
     createdBy: document.querySelector(".createdBy"),
+    languageSelection: document.querySelector('.language-selection')
   };
 
   const initialState = {
@@ -48,6 +57,21 @@ export default () => {
   };
 
   const state = initView(elements, initialState, i18nInstance);
+
+  languages.forEach((lng) => {
+    const li = document.createElement('li');
+    const button = document.createElement('button');
+    button.classList.add('dropdown-item')
+    if (lng === defaultLanguage) {
+      button.classList.add('active');
+    }
+    button.setAttribute('type', 'button')
+    button.setAttribute('data-lng', lng)
+    button.textContent = i18nInstance.t(`languages.${lng}`);
+    li.appendChild(button);
+    button.addEventListener('click', handleSwitchLanguage(state));
+    elements.languageSelection.appendChild(li);
+  })
 
   state.lng = defaultLanguage;
 
