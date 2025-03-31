@@ -32,15 +32,24 @@ const render = (elements, state, i18nInstance) => (path, value) => {
     }
 
     case "lng": {
-      document.title = i18nInstance.t("title");
-      elements.title.textContent = i18nInstance.t("title");
-      elements.lead.textContent = i18nInstance.t("lead");
-      elements.fields.url.placeholder = i18nInstance.t("input.placeholder");
-      elements.label.textContent = i18nInstance.t("input.label");
-      elements.submitButton.textContent = i18nInstance.t("button");
-      elements.example.textContent = i18nInstance.t("example");
-      elements.createdBy.textContent = i18nInstance.t("created by");
-      elements.author.textContent = i18nInstance.t("author");
+      const active = elements.languageSelection.querySelector(".active");
+      active.classList.remove("active");
+      const current = elements.languageSelection.querySelector(
+        `[data-lng="${value}"]`,
+      );
+      current.classList.add("active");
+
+      i18nInstance.changeLanguage(value).then(() => {
+        document.title = i18nInstance.t("title");
+        elements.title.textContent = i18nInstance.t("title");
+        elements.lead.textContent = i18nInstance.t("lead");
+        elements.fields.url.placeholder = i18nInstance.t("input.placeholder");
+        elements.label.textContent = i18nInstance.t("input.label");
+        elements.submitButton.textContent = i18nInstance.t("button");
+        elements.example.textContent = i18nInstance.t("example");
+        elements.createdBy.textContent = i18nInstance.t("created by");
+        elements.author.textContent = i18nInstance.t("author");
+      });
       break;
     }
 

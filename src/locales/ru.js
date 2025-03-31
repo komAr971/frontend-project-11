@@ -1,5 +1,9 @@
 export default {
   translation: {
+    languages: {
+      en: "🇬🇧 English",
+      ru: "🇷🇺 Русский",
+    },
     error: {
       notOneOf: "RSS уже существует",
       url: "Ссылка должна быть валидным URL",
