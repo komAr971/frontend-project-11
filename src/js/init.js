@@ -1,8 +1,10 @@
 import { string, setLocale } from "yup";
 import i18next from "i18next";
+import axios from 'axios';
 
 import resources from "../locales/index.js";
 import initView from "./view.js";
+import rssParser from "./rssParser.js";
 
 const languages = ["ru", "en"];
 
@@ -53,7 +55,9 @@ export default () => {
     },
     errors: [],
     process: "filling", // "processing", "failed", "success"
-    feedList: ["https://lorem-rss.hexlet.app/feed"],
+    feedList: [],
+    feeds: [],
+    posts: []
   };
 
   const state = initView(elements, initialState, i18nInstance);
@@ -102,7 +106,12 @@ export default () => {
         return;
       }
 
-      state.process = "success";
+      return axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(state.formData.url)}`);
+    }).then((result) => {
+      const { feed, posts } = rssParser(result.data.contents);
+      console.log(feed);
+      console.log(posts);
+      console.log(result.data.contents);
     });
   });
 };
