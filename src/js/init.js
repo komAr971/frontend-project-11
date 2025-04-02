@@ -46,6 +46,8 @@ export default () => {
     author: document.querySelector(".author"),
     createdBy: document.querySelector(".createdBy"),
     languageSelection: document.querySelector(".language-selection"),
+    posts: document.querySelector('.posts'),
+    feeds: document.querySelector('.feeds'),
   };
 
   const initialState = {
@@ -55,7 +57,6 @@ export default () => {
     },
     errors: [],
     process: "filling", // "processing", "failed", "success"
-    feedList: [],
     feeds: [],
     posts: []
   };
@@ -109,9 +110,8 @@ export default () => {
       return axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(state.formData.url)}`);
     }).then((result) => {
       const { feed, posts } = rssParser(result.data.contents);
-      console.log(feed);
-      console.log(posts);
-      console.log(result.data.contents);
+      state.feeds.push(feed);
+      state.posts.push(...posts);
     });
   });
 };
