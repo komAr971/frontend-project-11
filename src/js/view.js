@@ -18,6 +18,10 @@ const render = (elements, state, i18nInstance) => (path, value) => {
         }
         case "success": {
           elements.feedback.textContent = "";
+          elements.feeds.innerHTML = '';
+          elements.posts.innerHTML = '';
+
+          
           break;
         }
         default: {
