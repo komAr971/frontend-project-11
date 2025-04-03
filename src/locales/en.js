@@ -18,5 +18,8 @@ export default {
     example: "Example: https://lorem-rss.hexlet.app/feed",
     "created by": "created by:",
     author: "Konstantin Korostelev",
+    postsTitle: 'Posts',
+    postButton: 'View',
+    feedsTitle: 'Feeds',
   },
 };

@@ -58,7 +58,8 @@ export default () => {
     errors: [],
     process: "filling", // "processing", "failed", "success"
     feeds: [],
-    posts: []
+    posts: [],
+    feedList: [],
   };
 
   const state = initView(elements, initialState, i18nInstance);
@@ -110,8 +111,11 @@ export default () => {
       return axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(state.formData.url)}`);
     }).then((result) => {
       const { feed, posts } = rssParser(result.data.contents);
+      state.formData.url = '';
+      e.target.reset();
       state.feeds.push(feed);
       state.posts.push(...posts);
+      state.process = 'success';
     });
   });
 };
