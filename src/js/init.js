@@ -1,6 +1,6 @@
 import { string, setLocale } from "yup";
 import i18next from "i18next";
-import axios from 'axios';
+import axios from "axios";
 
 import resources from "../locales/index.js";
 import initView from "./view.js";
@@ -46,8 +46,8 @@ export default () => {
     author: document.querySelector(".author"),
     createdBy: document.querySelector(".createdBy"),
     languageSelection: document.querySelector(".language-selection"),
-    posts: document.querySelector('.posts'),
-    feeds: document.querySelector('.feeds'),
+    posts: document.querySelector(".posts"),
+    feeds: document.querySelector(".feeds"),
   };
 
   const initialState = {
@@ -102,20 +102,24 @@ export default () => {
     state.process = "processing";
     state.errors = [];
 
-    validateForm().then(() => {
-      if (state.errors.length > 0) {
-        state.process = "failed";
-        return;
-      }
+    validateForm()
+      .then(() => {
+        if (state.errors.length > 0) {
+          state.process = "failed";
+          return;
+        }
 
-      return axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(state.formData.url)}`);
-    }).then((result) => {
-      const { feed, posts } = rssParser(result.data.contents);
-      state.formData.url = '';
-      e.target.reset();
-      state.feeds.push(feed);
-      state.posts.push(...posts);
-      state.process = 'success';
-    });
+        return axios.get(
+          `https://allorigins.hexlet.app/get?url=${encodeURIComponent(state.formData.url)}`,
+        );
+      })
+      .then((result) => {
+        const { feed, posts } = rssParser(result.data.contents);
+        state.formData.url = "";
+        e.target.reset();
+        state.feeds.push(feed);
+        state.posts.push(...posts);
+        state.process = "success";
+      });
   });
 };
