@@ -142,10 +142,15 @@ const render = (elements, state, i18nInstance) => (path, value) => {
         elements.example.textContent = i18nInstance.t("example");
         elements.createdBy.textContent = i18nInstance.t("created by");
         elements.author.textContent = i18nInstance.t("author");
-        elements.feeds.querySelector(".card-title").textContent =
+        if (elements.feeds.querySelector(".card-title")) {
+          elements.feeds.querySelector(".card-title").textContent =
           i18nInstance.t("feedsTitle");
-        elements.posts.querySelector(".card-title").textContent =
+        }
+        if (elements.posts.querySelector(".card-title")) {
+          elements.posts.querySelector(".card-title").textContent =
           i18nInstance.t("postsTitle");
+        }
+        
         const postButtons = document.querySelectorAll(".posts .btn");
         postButtons.forEach((btn) => {
           btn.textContent = i18nInstance.t("postButton");

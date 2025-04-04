@@ -59,7 +59,7 @@ export default () => {
     process: "filling", // "processing", "failed", "success"
     feeds: [],
     posts: [],
-    feedList: [],
+    feedUrlList: [],
   };
 
   const state = initView(elements, initialState, i18nInstance);
@@ -82,7 +82,7 @@ export default () => {
   state.lng = defaultLanguage;
 
   const validateForm = () => {
-    const schema = string().url().notOneOf(state.feedList);
+    const schema = string().url().notOneOf(state.feedUrlList);
 
     return schema
       .validate(state.formData.url)
@@ -106,7 +106,7 @@ export default () => {
       .then(() => {
         if (state.errors.length > 0) {
           state.process = "failed";
-          return;
+          throw 'validate failed'
         }
 
         return axios.get(
@@ -115,11 +115,13 @@ export default () => {
       })
       .then((result) => {
         const { feed, posts } = rssParser(result.data.contents);
+        state.feedUrlList.push(state.formData.url);
         state.formData.url = "";
         e.target.reset();
         state.feeds.push(feed);
         state.posts.push(...posts);
         state.process = "success";
-      });
+      })
+      .catch(() => {});
   });
 };
