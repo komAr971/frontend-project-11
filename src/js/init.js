@@ -5,6 +5,7 @@ import axios from "axios";
 import resources from "../locales/index.js";
 import initView from "./view.js";
 import rssParser from "./rssParser.js";
+import update from './update.js'
 
 const languages = ["ru", "en"];
 
@@ -124,4 +125,6 @@ export default () => {
       })
       .catch(() => {});
   });
+
+  setTimeout(() => update(state), 5000);
 };
