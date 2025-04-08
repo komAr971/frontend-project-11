@@ -114,13 +114,13 @@ const render = (elements, state, i18nInstance) => {
     elements.author.textContent = i18nInstance.t("author");
     if (elements.feeds.querySelector(".card-title")) {
       elements.feeds.querySelector(".card-title").textContent =
-      i18nInstance.t("feedsTitle");
+        i18nInstance.t("feedsTitle");
     }
     if (elements.posts.querySelector(".card-title")) {
       elements.posts.querySelector(".card-title").textContent =
-      i18nInstance.t("postsTitle");
+        i18nInstance.t("postsTitle");
     }
-    
+
     const postButtons = document.querySelectorAll(".posts .btn");
     postButtons.forEach((btn) => {
       btn.textContent = i18nInstance.t("postButton");
@@ -129,16 +129,16 @@ const render = (elements, state, i18nInstance) => {
 };
 
 export default (elements, state, i18nInstance) => {
-  const watchedState = onChange(state, (path, value) => {
+  const watchedState = onChange(state, (path) => {
     console.log(state);
     switch (path) {
-      case 'process': 
-      case 'lng': 
-      case 'posts': {
-        render(elements, state, i18nInstance)
+      case "process":
+      case "lng":
+      case "posts": {
+        render(elements, state, i18nInstance);
         break;
       }
-      default: 
+      default:
         break;
     }
   });

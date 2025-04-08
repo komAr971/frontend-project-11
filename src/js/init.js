@@ -6,7 +6,7 @@ import _ from "lodash";
 import resources from "../locales/index.js";
 import initView from "./view.js";
 import rssParser from "./rssParser.js";
-import update from './update.js'
+import update from "./update.js";
 
 const languages = ["ru", "en"];
 
@@ -84,7 +84,9 @@ export default () => {
   state.lng = defaultLanguage;
 
   const validateForm = () => {
-    const schema = string().url().notOneOf(state.feedUrlList.map((item) => item.url));
+    const schema = string()
+      .url()
+      .notOneOf(state.feedUrlList.map((item) => item.url));
 
     return schema
       .validate(state.formData.url)
@@ -108,7 +110,7 @@ export default () => {
       .then(() => {
         if (state.errors.length > 0) {
           state.process = "failed";
-          throw 'validate failed'
+          throw "validate failed";
         }
 
         return axios.get(
@@ -117,16 +119,16 @@ export default () => {
       })
       .then((result) => {
         const { feed, posts } = rssParser(result.data.contents);
-        feed.id = _.uniqueId('feed_');
+        feed.id = _.uniqueId("feed_");
 
         console.log(feed);
 
         posts.forEach((post) => {
-          post.id = _.uniqueId('post_');
+          post.id = _.uniqueId("post_");
           post.feedId = feed.id;
-        })
+        });
 
-        state.feedUrlList.push({feedId: feed.id, url: state.formData.url});
+        state.feedUrlList.push({ feedId: feed.id, url: state.formData.url });
         state.formData.url = "";
         e.target.reset();
         state.feeds.push(feed);
