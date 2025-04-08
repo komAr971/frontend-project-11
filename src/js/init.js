@@ -1,6 +1,7 @@
 import { string, setLocale } from "yup";
 import i18next from "i18next";
 import axios from "axios";
+import _ from "lodash";
 
 import resources from "../locales/index.js";
 import initView from "./view.js";
@@ -83,7 +84,7 @@ export default () => {
   state.lng = defaultLanguage;
 
   const validateForm = () => {
-    const schema = string().url().notOneOf(state.feedUrlList);
+    const schema = string().url().notOneOf(state.feedUrlList.map((item) => item.url));
 
     return schema
       .validate(state.formData.url)
@@ -111,12 +112,21 @@ export default () => {
         }
 
         return axios.get(
-          `https://allorigins.hexlet.app/get?url=${encodeURIComponent(state.formData.url)}`,
+          `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(state.formData.url)}`,
         );
       })
       .then((result) => {
         const { feed, posts } = rssParser(result.data.contents);
-        state.feedUrlList.push(state.formData.url);
+        feed.id = _.uniqueId('feed_');
+
+        console.log(feed);
+
+        posts.forEach((post) => {
+          post.id = _.uniqueId('post_');
+          post.feedId = feed.id;
+        })
+
+        state.feedUrlList.push({feedId: feed.id, url: state.formData.url});
         state.formData.url = "";
         e.target.reset();
         state.feeds.push(feed);
