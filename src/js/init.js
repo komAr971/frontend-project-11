@@ -62,6 +62,7 @@ export default () => {
     feeds: [],
     posts: [],
     feedUrlList: [],
+    unreadPosts: [],
   };
 
   const state = initView(elements, initialState, i18nInstance);
@@ -124,7 +125,6 @@ export default () => {
         console.log(feed);
 
         posts.forEach((post) => {
-          post.id = _.uniqueId("post_");
           post.feedId = feed.id;
         });
 
@@ -133,6 +133,7 @@ export default () => {
         e.target.reset();
         state.feeds.push(feed);
         state.posts.push(...posts);
+        state.unreadPosts.push(...posts.map((post) => post.id))
         state.process = "success";
       })
       .catch(() => {});
