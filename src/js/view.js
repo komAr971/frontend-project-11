@@ -5,95 +5,114 @@ const render = (elements, state, i18nInstance) => {
   elements.feeds.innerHTML = "";
   elements.posts.innerHTML = "";
 
-  const postCard = document.createElement("div");
-  postCard.classList.add("card", "border-0");
+  if (state.errors.length > 0) {
+    elements.feedback.classList.remove("text-success");
+    elements.feedback.classList.add("text-danger");
+    elements.feedback.textContent = state.errors.join("\n");
+    elements.fields.url.classList.add("is-invalid");
+  } else {
+    elements.fields.url.classList.remove("is-invalid");
+    elements.feedback.classList.remove("text-danger");
+  }
 
-  const postCardBody = document.createElement("div");
-  postCardBody.classList.add("card-body");
+  if (state.process === "success") {
+    elements.feedback.classList.add("text-success");
+    elements.feedback.textContent = i18nInstance.t("successMessage");
+  }
 
-  const postCardTitle = document.createElement("h2");
-  postCardTitle.classList.add("card-title", "h4");
-  postCardTitle.textContent = i18nInstance.t("postsTitle");
-  postCardBody.appendChild(postCardTitle);
+  if (state.feeds.length > 0) {
+    const feedCard = document.createElement("div");
+    feedCard.classList.add("card", "border-0");
 
-  postCard.appendChild(postCardBody);
+    const feedCardBody = document.createElement("div");
+    feedCardBody.classList.add("card-body");
 
-  const postsUl = document.createElement("ul");
-  postsUl.classList.add("list-group", "border-0", "rounded-0");
+    const feedCardTitle = document.createElement("h2");
+    feedCardTitle.classList.add("card-title", "h4");
+    feedCardTitle.textContent = i18nInstance.t("feedsTitle");
+    feedCardBody.appendChild(feedCardTitle);
 
-  state.posts.forEach((post) => {
-    const postLi = document.createElement("li");
-    postLi.classList.add(
-      "list-group-item",
-      "d-flex",
-      "justify-content-between",
-      "align-items-start",
-      "border-0",
-      "border-end-0",
-    );
+    feedCard.appendChild(feedCardBody);
 
-    const postA = document.createElement("a");
-    postA.classList.add("fw-bold");
-    postA.setAttribute("href", post.link);
-    postA.setAttribute("data-id", post.id);
-    postA.setAttribute("target", "_blank");
-    postA.setAttribute("rel", "noopener noreferrer");
-    postA.textContent = post.title;
+    const feedUl = document.createElement("ul");
+    feedUl.classList.add("list-group", "border-0", "rounded-0");
 
-    const postButton = document.createElement("button");
-    postButton.classList.add("btn", "btn-outline-primary", "btn-sm");
-    postButton.setAttribute("type", "button");
-    postButton.setAttribute("data-id", post.id);
-    postButton.setAttribute("data-bs-toggle", "modal");
-    postButton.setAttribute("data-bs-target", "#modal");
-    postButton.textContent = i18nInstance.t("postButton");
+    state.feeds.forEach((feed) => {
+      const feedLi = document.createElement("li");
+      feedLi.classList.add("list-group-item", "border-0", "border-end-0");
 
-    postLi.appendChild(postA);
-    postLi.appendChild(postButton);
+      const feedH3 = document.createElement("h3");
+      feedH3.classList.add("h6", "m-0");
+      feedH3.textContent = feed.title;
 
-    postsUl.appendChild(postLi);
-  });
+      const feedP = document.createElement("p");
+      feedP.classList.add("m-0", "small", "text-black-50");
+      feedP.textContent = feed.description;
 
-  postCard.appendChild(postsUl);
-  elements.posts.appendChild(postCard);
+      feedLi.appendChild(feedH3);
+      feedLi.appendChild(feedP);
 
-  const feedCard = document.createElement("div");
-  feedCard.classList.add("card", "border-0");
+      feedUl.appendChild(feedLi);
+    });
 
-  const feedCardBody = document.createElement("div");
-  feedCardBody.classList.add("card-body");
+    feedCard.appendChild(feedUl);
 
-  const feedCardTitle = document.createElement("h2");
-  feedCardTitle.classList.add("card-title", "h4");
-  feedCardTitle.textContent = i18nInstance.t("feedsTitle");
-  feedCardBody.appendChild(feedCardTitle);
+    elements.feeds.appendChild(feedCard);
+  }
 
-  feedCard.appendChild(feedCardBody);
+  if (state.posts.length > 0) {
+    const postCard = document.createElement("div");
+    postCard.classList.add("card", "border-0");
 
-  const feedUl = document.createElement("ul");
-  feedUl.classList.add("list-group", "border-0", "rounded-0");
+    const postCardBody = document.createElement("div");
+    postCardBody.classList.add("card-body");
 
-  state.feeds.forEach((feed) => {
-    const feedLi = document.createElement("li");
-    feedLi.classList.add("list-group-item", "border-0", "border-end-0");
+    const postCardTitle = document.createElement("h2");
+    postCardTitle.classList.add("card-title", "h4");
+    postCardTitle.textContent = i18nInstance.t("postsTitle");
+    postCardBody.appendChild(postCardTitle);
 
-    const feedH3 = document.createElement("h3");
-    feedH3.classList.add("h6", "m-0");
-    feedH3.textContent = feed.title;
+    postCard.appendChild(postCardBody);
 
-    const feedP = document.createElement("p");
-    feedP.classList.add("m-0", "small", "text-black-50");
-    feedP.textContent = feed.description;
+    const postsUl = document.createElement("ul");
+    postsUl.classList.add("list-group", "border-0", "rounded-0");
 
-    feedLi.appendChild(feedH3);
-    feedLi.appendChild(feedP);
+    state.posts.forEach((post) => {
+      const postLi = document.createElement("li");
+      postLi.classList.add(
+        "list-group-item",
+        "d-flex",
+        "justify-content-between",
+        "align-items-start",
+        "border-0",
+        "border-end-0",
+      );
 
-    feedUl.appendChild(feedLi);
-  });
+      const postA = document.createElement("a");
+      postA.classList.add("fw-bold");
+      postA.setAttribute("href", post.link);
+      postA.setAttribute("data-id", post.id);
+      postA.setAttribute("target", "_blank");
+      postA.setAttribute("rel", "noopener noreferrer");
+      postA.textContent = post.title;
 
-  feedCard.appendChild(feedUl);
+      const postButton = document.createElement("button");
+      postButton.classList.add("btn", "btn-outline-primary", "btn-sm");
+      postButton.setAttribute("type", "button");
+      postButton.setAttribute("data-id", post.id);
+      postButton.setAttribute("data-bs-toggle", "modal");
+      postButton.setAttribute("data-bs-target", "#modal");
+      postButton.textContent = i18nInstance.t("postButton");
 
-  elements.feeds.appendChild(feedCard);
+      postLi.appendChild(postA);
+      postLi.appendChild(postButton);
+
+      postsUl.appendChild(postLi);
+    });
+
+    postCard.appendChild(postsUl);
+    elements.posts.appendChild(postCard);
+  }
 
   const active = elements.languageSelection.querySelector(".active");
   active.classList.remove("active");
@@ -119,6 +138,10 @@ const render = (elements, state, i18nInstance) => {
     if (elements.posts.querySelector(".card-title")) {
       elements.posts.querySelector(".card-title").textContent =
         i18nInstance.t("postsTitle");
+    }
+
+    if (state.process === "success") {
+      elements.feedback.textContent = i18nInstance.t("successMessage");
     }
 
     const postButtons = document.querySelectorAll(".posts .btn");

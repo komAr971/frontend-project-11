@@ -21,5 +21,6 @@ export default {
     postsTitle: "Посты",
     postButton: "Просмотр",
     feedsTitle: "Фиды",
+    successMessage: "RSS успешно загружен",
   },
 };
