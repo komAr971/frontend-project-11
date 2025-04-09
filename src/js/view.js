@@ -77,7 +77,10 @@ const render = (elements, state, i18nInstance) => {
     const postsUl = document.createElement("ul");
     postsUl.classList.add("list-group", "border-0", "rounded-0");
 
-    state.posts.forEach((post) => {
+    const sortedPosts = state.posts.sort(
+      (post1, post2) => post2.pubDate - post1.pubDate,
+    );
+    sortedPosts.forEach((post) => {
       const postLi = document.createElement("li");
       postLi.classList.add(
         "list-group-item",
