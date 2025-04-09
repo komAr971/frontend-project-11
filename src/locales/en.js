@@ -21,5 +21,6 @@ export default {
     postsTitle: "Posts",
     postButton: "View",
     feedsTitle: "Feeds",
+    successMessage: "RSS successfully loaded",
   },
 };
