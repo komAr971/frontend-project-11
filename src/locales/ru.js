@@ -8,7 +8,7 @@ export default {
       notOneOf: "RSS уже существует",
       url: "Ссылка должна быть валидным URL",
       'Wrong rss version': "Ресурс не содержит валидный RSS",
-      'Network error': 'Ошибка сети'
+      'Network Error': 'Ошибка сети'
     },
     title: "RSS агрегатор",
     lead: "Начните читать RSS сегодня! Это легко, это красиво.",
