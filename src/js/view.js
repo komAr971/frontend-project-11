@@ -171,6 +171,7 @@ const render = (elements, state, i18nInstance) => {
 };
 
 export default (elements, state, i18nInstance) => {
+  console.log(state);
   const watchedState = onChange(state, (path) => {
     switch (path) {
       case "process":
