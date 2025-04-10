@@ -1,22 +1,22 @@
-const path = require("path");
-const autoprefixer = require("autoprefixer");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path');
+const autoprefixer = require('autoprefixer');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  mode: "development",
-  entry: "./src/js/index.js",
+  mode: 'development',
+  entry: './src/js/index.js',
   output: {
-    filename: "main.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
-    static: path.resolve(__dirname, "dist"),
+    static: path.resolve(__dirname, 'dist'),
     port: 8080,
     hot: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "index.html"),
+      template: path.resolve(__dirname, 'index.html'),
     }),
   ],
   module: {
@@ -26,15 +26,15 @@ module.exports = {
         use: [
           {
             // Adds CSS to the DOM by injecting a `<style>` tag
-            loader: "style-loader",
+            loader: 'style-loader',
           },
           {
             // Interprets `@import` and `url()` like `import/require()` and will resolve them
-            loader: "css-loader",
+            loader: 'css-loader',
           },
           {
             // Loader for webpack to process CSS with PostCSS
-            loader: "postcss-loader",
+            loader: 'postcss-loader',
             options: {
               postcssOptions: {
                 plugins: [autoprefixer],
@@ -43,7 +43,7 @@ module.exports = {
           },
           {
             // Loads a SASS/SCSS file and compiles it to CSS
-            loader: "sass-loader",
+            loader: 'sass-loader',
             options: {
               sassOptions: {
                 quietDeps: true, // Игнорировать предупреждения от зависимостей

@@ -1,14 +1,14 @@
-import axios from "axios";
-import _ from "lodash";
+import axios from 'axios';
+import _ from 'lodash';
 
-import rssParser from "./rssParser.js";
+import rssParser from './rssParser.js';
 
 const update = (state) => {
-  const feedUrlList = state.feedUrlList;
+  const { feedUrlList } = state;
   feedUrlList.forEach(({ feedId, url }) => {
     const maxPostPubDate = _.maxBy(
       state.posts.filter((post) => post.feedId === feedId),
-      "pubDate",
+      'pubDate',
     ).pubDate;
 
     axios
@@ -18,12 +18,11 @@ const update = (state) => {
       .then((result) => {
         const { posts } = rssParser(result.data.contents);
         const newPosts = posts.filter((post) => post.pubDate > maxPostPubDate);
-        newPosts.forEach((post) => {
-          post.feedId = feedId;
-        });
-        if (newPosts.length > 0) {
-          state.unreadPosts.push(...newPosts.map((post) => post.id));
-          state.posts.push(...newPosts);
+        const newPostWithFeedId = newPosts.map((post) => ({ ...post, feedId }));
+
+        if (newPostWithFeedId.length > 0) {
+          state.unreadPosts.push(...newPostWithFeedId.map((post) => post.id));
+          state.posts.push(...newPostWithFeedId);
         }
       });
   });

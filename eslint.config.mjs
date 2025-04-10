@@ -1,10 +1,19 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import { globalIgnores } from "eslint/config";
+import js from '@eslint/js';
+import globals from 'globals';
 
-/** @type {import('eslint').Linter.Config[]} */
 export default [
-  { languageOptions: { globals: globals.browser } },
-  pluginJs.configs.recommended,
-  globalIgnores(["webpack.config.js", "dist"]),
+  // Глобальные игнорируемые файлы
+  {
+    ignores: ['dist/*', 'node_modules/*', '*.config*'],
+  },
+  // Конфигурация для JS-файлов
+  {
+    files: ['**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      globals: {
+        ...globals.browser, // Добавляем глобальные переменные браузера
+      },
+    },
+    ...js.configs.recommended, // Расширяем рекомендуемую конфигурацию JS
+  },
 ];
