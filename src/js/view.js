@@ -111,15 +111,15 @@ const render = (els, state, i18nInstance) => {
       postButton.textContent = i18nInstance.t('postButton');
       postButton.addEventListener('click', (e) => {
         const postId = e.target.dataset.id;
-        const post = state.posts.find((item) => item.id === postId);
+        const postCurrent = state.posts.find((item) => item.id === postId);
 
         state.unreadPosts = state.unreadPosts.filter((item) => item !== postId);
-        const postA = document.querySelector(`a[data-id=${postId}]`);
-        postA.classList.remove('fw-bold');
-        postA.classList.add('fw-normal');
+        const postCurrentA = document.querySelector(`a[data-id=${postId}]`);
+        postCurrentA.classList.remove('fw-bold');
+        postCurrentA.classList.add('fw-normal');
 
-        elements.modal.title.textContent = post.title;
-        elements.modal.body.textContent = post.description;
+        elements.modal.title.textContent = postCurrent.title;
+        elements.modal.body.textContent = postCurrent.description;
       });
 
       postLi.appendChild(postA);
@@ -152,12 +152,10 @@ const render = (els, state, i18nInstance) => {
     elements.modal.btnRead.textContent = i18nInstance.t('modal.btnRead');
     elements.modal.btnClose.textContent = i18nInstance.t('modal.btnClose');
     if (elements.feeds.querySelector('.card-title')) {
-      elements.feeds.querySelector('.card-title').textContent =
-        i18nInstance.t('feedsTitle');
+      elements.feeds.querySelector('.card-title').textContent = i18nInstance.t('feedsTitle');
     }
     if (elements.posts.querySelector('.card-title')) {
-      elements.posts.querySelector('.card-title').textContent =
-        i18nInstance.t('postsTitle');
+      elements.posts.querySelector('.card-title').textContent = i18nInstance.t('postsTitle');
     }
 
     if (state.process === 'success') {

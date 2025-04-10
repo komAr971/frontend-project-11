@@ -128,7 +128,7 @@ export default () => {
         const { feed, posts } = rssParser(result.data.contents);
         feed.id = _.uniqueId('feed_');
 
-        const postsWithFeedId = posts.map((post) => ({ ...post, feedId: feed.id }))
+        const postsWithFeedId = posts.map((post) => ({ ...post, feedId: feed.id }));
 
         state.feedUrlList.push({ feedId: feed.id, url: state.formData.url });
         state.formData.url = '';
