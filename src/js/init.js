@@ -99,7 +99,9 @@ export default () => {
       .validate(state.formData.url)
       .then()
       .catch((err) => {
+        console.log('kek')
         state.errors = err.errors;
+        console.log(err);
       });
   };
 
@@ -145,7 +147,6 @@ export default () => {
         state.process = "success";
       })
       .catch((err) => {
-        elements.author.textContent = err;
         state.errors.push(i18nInstance.t(`error.${err}`))
         state.process = "failed";
       });
