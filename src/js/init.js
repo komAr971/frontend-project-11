@@ -50,6 +50,12 @@ export default () => {
     languageSelection: document.querySelector(".language-selection"),
     posts: document.querySelector(".posts"),
     feeds: document.querySelector(".feeds"),
+    modal: {
+      title: document.querySelector(".modal .modal-title"),
+      body: document.querySelector(".modal .modal-body"),
+      btnRead: document.querySelector(".modal .modal-footer .btn-primary"),
+      btnClose: document.querySelector(".modal .modal-footer .btn-secondary"),
+    },
   };
 
   const initialState = {
@@ -133,7 +139,7 @@ export default () => {
         e.target.reset();
         state.feeds.push(feed);
         state.posts.push(...posts);
-        state.unreadPosts.push(...posts.map((post) => post.id))
+        state.unreadPosts.push(...posts.map((post) => post.id));
         state.process = "success";
       })
       .catch(() => {});

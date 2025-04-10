@@ -92,7 +92,9 @@ const render = (elements, state, i18nInstance) => {
       );
 
       const postA = document.createElement("a");
-      postA.classList.add("fw-bold");
+      postA.classList.add(
+        state.unreadPosts.includes(post.id) ? "fw-bold" : "fw-normal",
+      );
       postA.setAttribute("href", post.link);
       postA.setAttribute("data-id", post.id);
       postA.setAttribute("target", "_blank");
@@ -106,6 +108,20 @@ const render = (elements, state, i18nInstance) => {
       postButton.setAttribute("data-bs-toggle", "modal");
       postButton.setAttribute("data-bs-target", "#modal");
       postButton.textContent = i18nInstance.t("postButton");
+      postButton.addEventListener("click", (e) => {
+        const postId = e.target.dataset.id;
+        const post = state.posts.find((item) => item.id === postId);
+
+        state.unreadPosts = state.unreadPosts.filter((item) => item !== postId);
+        const postA = document.querySelector(`a[data-id=${postId}]`);
+        postA.classList.remove("fw-bold");
+        postA.classList.add("fw-normal");
+
+        console.log(state.unreadPosts);
+
+        elements.modal.title.textContent = post.title;
+        elements.modal.body.textContent = post.description;
+      });
 
       postLi.appendChild(postA);
       postLi.appendChild(postButton);
@@ -134,6 +150,8 @@ const render = (elements, state, i18nInstance) => {
     elements.example.textContent = i18nInstance.t("example");
     elements.createdBy.textContent = i18nInstance.t("created by");
     elements.author.textContent = i18nInstance.t("author");
+    elements.modal.btnRead.textContent = i18nInstance.t("modal.btnRead");
+    elements.modal.btnClose.textContent = i18nInstance.t("modal.btnClose");
     if (elements.feeds.querySelector(".card-title")) {
       elements.feeds.querySelector(".card-title").textContent =
         i18nInstance.t("feedsTitle");

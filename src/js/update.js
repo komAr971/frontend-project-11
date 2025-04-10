@@ -22,8 +22,8 @@ const update = (state) => {
           post.feedId = feedId;
         });
         if (newPosts.length > 0) {
+          state.unreadPosts.push(...newPosts.map((post) => post.id));
           state.posts.push(...newPosts);
-          state.unreadPosts.push(...newPosts.map((post) => post.id))
         }
       });
   });
