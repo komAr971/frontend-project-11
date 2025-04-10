@@ -22,5 +22,9 @@ export default {
     postButton: "Просмотр",
     feedsTitle: "Фиды",
     successMessage: "RSS успешно загружен",
+    modal: {
+      btnRead: "Читать полностью",
+      btnClose: "Закрыть",
+    },
   },
 };

@@ -17,13 +17,12 @@ const update = (state) => {
       )
       .then((result) => {
         const { posts } = rssParser(result.data.contents);
-        console.log(posts);
         const newPosts = posts.filter((post) => post.pubDate > maxPostPubDate);
         newPosts.forEach((post) => {
           post.feedId = feedId;
         });
-        console.log(newPosts);
         if (newPosts.length > 0) {
+          state.unreadPosts.push(...newPosts.map((post) => post.id));
           state.posts.push(...newPosts);
         }
       });

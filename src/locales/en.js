@@ -22,5 +22,9 @@ export default {
     postButton: "View",
     feedsTitle: "Feeds",
     successMessage: "RSS successfully loaded",
+    modal: {
+      btnRead: "Read full",
+      btnClose: "Close",
+    },
   },
 };

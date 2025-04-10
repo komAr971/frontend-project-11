@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export default (content) => {
   const domParser = new DOMParser();
   const rss = domParser.parseFromString(
@@ -23,6 +25,7 @@ export default (content) => {
   const posts = [];
   items.forEach((item) => {
     const post = {
+      id: _.uniqueId("post_"),
       title: item.querySelector("title").textContent,
       description: item.querySelector("description").textContent,
       link: item.querySelector("link").textContent,
