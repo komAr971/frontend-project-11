@@ -1,6 +1,7 @@
 import onChange from 'on-change';
 
-const render = (elements, state, i18nInstance) => {
+const render = (elementsA, state, i18nInstance) => {
+  const elements = elementsA;
   elements.feedback.textContent = '';
   elements.feeds.innerHTML = '';
   elements.posts.innerHTML = '';
