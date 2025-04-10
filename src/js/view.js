@@ -113,7 +113,8 @@ const render = (els, state, i18nInstance) => {
         const postId = e.target.dataset.id;
         const postCurrent = state.posts.find((item) => item.id === postId);
 
-        state.unreadPosts = state.unreadPosts.filter((item) => item !== postId);
+        const state2 = state;
+        state2.unreadPosts = state2.unreadPosts.filter((item) => item !== postId);
         const postCurrentA = document.querySelector(`a[data-id=${postId}]`);
         postCurrentA.classList.remove('fw-bold');
         postCurrentA.classList.add('fw-normal');
@@ -164,7 +165,8 @@ const render = (els, state, i18nInstance) => {
 
     const postButtons = document.querySelectorAll('.posts .btn');
     postButtons.forEach((btn) => {
-      btn.textContent = i18nInstance.t('postButton');
+      const btnEl = btn;
+      btnEl.textContent = i18nInstance.t('postButton');
     });
   });
 };
