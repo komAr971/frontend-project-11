@@ -10,12 +10,6 @@ import update from './update.js';
 
 const languages = ['ru', 'en'];
 
-const handleSwitchLanguage = (state) => (evt) => {
-  const { lng } = evt.target.dataset;
-
-  state.lng = lng;
-};
-
 export default () => {
   const defaultLanguage = 'ru';
 
@@ -84,7 +78,10 @@ export default () => {
     button.setAttribute('data-lng', lng);
     button.textContent = i18nInstance.t(`languages.${lng}`);
     li.appendChild(button);
-    button.addEventListener('click', handleSwitchLanguage(state));
+    button.addEventListener('click', (e) => {
+      const { lng } = e.target.dataset;
+      state.lng = lng;
+    });
     elements.languageSelection.appendChild(li);
   });
 
@@ -117,7 +114,7 @@ export default () => {
       .then(() => {
         if (state.errors.length > 0) {
           state.process = 'failed';
-          throw 'validate failed';
+          throw new Error('validate failed');
         }
 
         return axios
@@ -125,12 +122,12 @@ export default () => {
             `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(state.formData.url)}`,
           )
           .catch(() => {
-            throw 'Network Error';
+            throw new Error('Network Error');
           });
       })
       .then((result) => {
         if (result?.data?.status?.http_code === 404) {
-          throw 'Network Error';
+          throw new Error('Network Error');
         }
         const { feed, posts } = rssParser(result.data.contents);
         feed.id = _.uniqueId('feed_');
