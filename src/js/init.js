@@ -122,13 +122,10 @@ export default () => {
             `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(state.formData.url)}`,
           )
           .catch(() => {
-            throw new Error('Network Error');
+            throw 'Network Error';
           });
       })
       .then((result) => {
-        if (result?.data?.status?.http_code === 404) {
-          throw new Error('Network Error');
-        }
         const { feed, posts } = rssParser(result.data.contents);
         feed.id = _.uniqueId('feed_');
 
