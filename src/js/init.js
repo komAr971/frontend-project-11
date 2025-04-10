@@ -125,6 +125,7 @@ export default () => {
         );
       })
       .then((result) => {
+        console.log(result);
         const { feed, posts } = rssParser(result.data.contents);
         feed.id = _.uniqueId("feed_");
 
@@ -140,7 +141,10 @@ export default () => {
         state.unreadPosts.push(...posts.map((post) => post.id));
         state.process = "success";
       })
-      .catch(() => {});
+      .catch(() => {
+        state.errors.push(i18nInstance.t('error.notRss'))
+        state.process = "failed";
+      });
   });
 
   setTimeout(() => update(state), 5000);
