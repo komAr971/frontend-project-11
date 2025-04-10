@@ -145,8 +145,8 @@ export default () => {
         state.process = "success";
       })
       .catch((err) => {
-        console.log(err);
-        state.errors.push(i18nInstance.t(`error[${err}]`))
+        elements.author.textContent = err;
+        state.errors.push(i18nInstance.t(`error.${err}`))
         state.process = "failed";
       });
   });
