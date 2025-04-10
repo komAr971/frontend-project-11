@@ -146,7 +146,7 @@ export default () => {
       })
       .catch((err) => {
         console.log(err);
-        state.errors.push(i18nInstance.t(`error.${err}`))
+        state.errors.push(i18nInstance.t(`error[${err}]`))
         state.process = "failed";
       });
   });
