@@ -171,8 +171,8 @@ const render = (elements, state, i18nInstance) => {
 };
 
 export default (elements, state, i18nInstance) => {
-  console.log(state);
   const watchedState = onChange(state, (path) => {
+    console.log(JSON.stringify(state));
     switch (path) {
       case "process":
       case "lng":
