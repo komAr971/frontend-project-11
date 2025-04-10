@@ -10,7 +10,7 @@ export default (content) => {
   const rssVersion = rss.getAttribute('version');
 
   if (rssVersion !== '2.0') {
-    throw 'Wrong rss version';
+    throw new Error('Wrong rss version');
   }
 
   const channel = rss.querySelector('channel');

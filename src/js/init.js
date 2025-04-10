@@ -79,8 +79,7 @@ export default () => {
     button.textContent = i18nInstance.t(`languages.${lng}`);
     li.appendChild(button);
     button.addEventListener('click', (e) => {
-      const { lng } = e.target.dataset;
-      state.lng = lng;
+      state.lng = e.target.dataset.lng;
     });
     elements.languageSelection.appendChild(li);
   });
@@ -122,7 +121,7 @@ export default () => {
             `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(state.formData.url)}`,
           )
           .catch(() => {
-            throw 'Network Error';
+            throw new Error('Network Error');
           });
       })
       .then((result) => {
@@ -142,7 +141,8 @@ export default () => {
         state.process = 'success';
       })
       .catch((err) => {
-        state.errors.push(i18nInstance.t(`error.${err}`));
+        console.log(err.message);
+        state.errors.push(i18nInstance.t(`error.${err.message}`));
         state.process = 'failed';
       });
   });
