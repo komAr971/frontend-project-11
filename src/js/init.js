@@ -128,8 +128,6 @@ export default () => {
         const { feed, posts } = rssParser(result.data.contents);
         feed.id = _.uniqueId("feed_");
 
-        console.log(feed);
-
         posts.forEach((post) => {
           post.feedId = feed.id;
         });

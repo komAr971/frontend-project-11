@@ -117,8 +117,6 @@ const render = (elements, state, i18nInstance) => {
         postA.classList.remove("fw-bold");
         postA.classList.add("fw-normal");
 
-        console.log(state.unreadPosts);
-
         elements.modal.title.textContent = post.title;
         elements.modal.body.textContent = post.description;
       });
@@ -174,7 +172,6 @@ const render = (elements, state, i18nInstance) => {
 
 export default (elements, state, i18nInstance) => {
   const watchedState = onChange(state, (path) => {
-    console.log(state);
     switch (path) {
       case "process":
       case "lng":
