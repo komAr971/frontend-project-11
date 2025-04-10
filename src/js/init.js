@@ -123,7 +123,7 @@ export default () => {
         return axios.get(
           `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(state.formData.url)}`,
         ).catch(() => {
-          console.log('aldfjalsdfjaldsfjalsdf!!!!!!!!!!!')
+          throw 'Network Error';
         });
       })
       .then((result) => {
@@ -147,7 +147,7 @@ export default () => {
         state.process = "success";
       })
       .catch((err) => {
-        state.errors.push(i18nInstance.t(`error.${err.trim()}`))
+        state.errors.push(i18nInstance.t(`error.${err}`))
         state.process = "failed";
       });
   });
