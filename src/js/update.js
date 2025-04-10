@@ -1,14 +1,14 @@
-import axios from "axios";
-import _ from "lodash";
+import axios from 'axios';
+import _ from 'lodash';
 
-import rssParser from "./rssParser.js";
+import rssParser from './rssParser.js';
 
 const update = (state) => {
   const feedUrlList = state.feedUrlList;
   feedUrlList.forEach(({ feedId, url }) => {
     const maxPostPubDate = _.maxBy(
       state.posts.filter((post) => post.feedId === feedId),
-      "pubDate",
+      'pubDate',
     ).pubDate;
 
     axios
