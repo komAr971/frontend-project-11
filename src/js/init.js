@@ -125,7 +125,8 @@ export default () => {
         );
       })
       .then((result) => {
-        if (result.data.status.http_code === 404) {
+        console.log(result);
+        if (result?.data?.status?.http_code === 404) {
           throw 'Network error';
         }
         const { feed, posts } = rssParser(result.data.contents);
