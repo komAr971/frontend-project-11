@@ -99,9 +99,7 @@ export default () => {
       .validate(state.formData.url)
       .then()
       .catch((err) => {
-        console.log('kek')
         state.errors = err.errors;
-        console.log(err);
       });
   };
 
@@ -147,7 +145,7 @@ export default () => {
         state.process = "success";
       })
       .catch((err) => {
-        state.errors.push(i18nInstance.t(`error.${err}`))
+        state.errors.push(i18nInstance.t(`error.${err.trim()}`))
         state.process = "failed";
       });
   });
