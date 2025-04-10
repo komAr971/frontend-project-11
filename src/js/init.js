@@ -120,16 +120,17 @@ export default () => {
           throw "validate failed";
         }
 
-        return axios.get(
-          `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(state.formData.url)}`,
-        ).catch(() => {
-          throw 'Network Error';
-        });
+        return axios
+          .get(
+            `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(state.formData.url)}`,
+          )
+          .catch(() => {
+            throw "Network Error";
+          });
       })
       .then((result) => {
-        console.log(result);
         if (result?.data?.status?.http_code === 404) {
-          throw 'Network Error';
+          throw "Network Error";
         }
         const { feed, posts } = rssParser(result.data.contents);
         feed.id = _.uniqueId("feed_");
@@ -147,7 +148,7 @@ export default () => {
         state.process = "success";
       })
       .catch((err) => {
-        state.errors.push(i18nInstance.t(`error.${err}`))
+        state.errors.push(i18nInstance.t(`error.${err}`));
         state.process = "failed";
       });
   });
