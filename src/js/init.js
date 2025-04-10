@@ -128,15 +128,13 @@ export default () => {
         const { feed, posts } = rssParser(result.data.contents);
         feed.id = _.uniqueId('feed_');
 
-        posts.forEach((post) => {
-          post.feedId = feed.id;
-        });
+        const postsWithFeedId = posts.map((post) => ({ ...post, feedId: feed.id }))
 
         state.feedUrlList.push({ feedId: feed.id, url: state.formData.url });
         state.formData.url = '';
         e.target.reset();
         state.feeds.push(feed);
-        state.posts.push(...posts);
+        state.posts.push(...postsWithFeedId);
         state.unreadPosts.push(...posts.map((post) => post.id));
         state.process = 'success';
       })

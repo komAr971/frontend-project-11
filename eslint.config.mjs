@@ -1,13 +1,19 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
 import js from '@eslint/js';
 import globals from 'globals';
 
-export default defineConfig([
-  globalIgnores([
-    'dist/*',
-    'node_modules/*',
-    '*.config*',
-  ]),
-  { files: ['**/*.{js,mjs,cjs}'], plugins: { js }, extends: ['js/recommended'] },
-  { files: ['**/*.{js,mjs,cjs}'], languageOptions: { globals: globals.browser } },
-]);
+export default [
+  // Глобальные игнорируемые файлы
+  {
+    ignores: ['dist/*', 'node_modules/*', '*.config*'],
+  },
+  // Конфигурация для JS-файлов
+  {
+    files: ['**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      globals: {
+        ...globals.browser, // Добавляем глобальные переменные браузера
+      },
+    },
+    ...js.configs.recommended, // Расширяем рекомендуемую конфигурацию JS
+  },
+];
