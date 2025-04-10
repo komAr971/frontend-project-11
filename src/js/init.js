@@ -125,7 +125,9 @@ export default () => {
         );
       })
       .then((result) => {
-        console.log(result);
+        if (result.data.status.http_code === 404) {
+          throw 'Network error';
+        }
         const { feed, posts } = rssParser(result.data.contents);
         feed.id = _.uniqueId("feed_");
 
@@ -141,8 +143,8 @@ export default () => {
         state.unreadPosts.push(...posts.map((post) => post.id));
         state.process = "success";
       })
-      .catch(() => {
-        state.errors.push(i18nInstance.t('error.notRss'))
+      .catch((err) => {
+        state.errors.push(i18nInstance.t(`error.${err}`))
         state.process = "failed";
       });
   });
