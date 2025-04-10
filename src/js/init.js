@@ -122,7 +122,9 @@ export default () => {
 
         return axios.get(
           `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(state.formData.url)}`,
-        );
+        ).catch(() => {
+          console.log('aldfjalsdfjaldsfjalsdf!!!!!!!!!!!')
+        });
       })
       .then((result) => {
         console.log(result);
