@@ -1,10 +1,13 @@
 import onChange from 'on-change';
 
 const render = (els, state, i18nInstance) => {
+  console.log(JSON.stringify(state));
+
   const elements = els;
   elements.feedback.textContent = '';
   elements.feeds.innerHTML = '';
   elements.posts.innerHTML = '';
+  elements.fields.url.value = state.formData.url;
 
   if (state.errors.length > 0) {
     elements.feedback.classList.remove('text-success');
@@ -184,5 +187,7 @@ export default (elements, state, i18nInstance) => {
         break;
     }
   });
+
+  render(elements, state, i18nInstance)
   return watchedState;
 };
