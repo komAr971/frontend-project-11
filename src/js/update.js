@@ -5,28 +5,33 @@ import rssParser from './rssParser.js';
 
 const update = (state) => {
   const { feedUrlList } = state;
-  feedUrlList.forEach(({ feedId, url }) => {
-    const maxPostPubDate = _.maxBy(
-      state.posts.filter((post) => post.feedId === feedId),
-      'pubDate',
-    ).pubDate;
 
-    axios
-      .get(
-        `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`,
-      )
-      .then((result) => {
-        const { posts } = rssParser(result.data.contents);
-        const newPosts = posts.filter((post) => post.pubDate > maxPostPubDate);
-        const newPostWithFeedId = newPosts.map((post) => ({ ...post, feedId }));
+  const updatePromises = feedUrlList.map((feed) => {
+    const currentFeedPosts = state.posts.filter((post) => post.feedId === feed.feedId);
+    const maxPostPubDate = _.maxBy(currentFeedPosts, 'pubDate').pubDate;
 
-        if (newPostWithFeedId.length > 0) {
-          state.unreadPosts.push(...newPostWithFeedId.map((post) => post.id));
-          state.posts.push(...newPostWithFeedId);
-        }
-      });
+    const url = new URL('https://allorigins.hexlet.app/get');
+    url.searchParams.set('disableCache', 'true');
+    url.searchParams.set('url', feed.url);
+
+    return axios.get(url.toString())
+      .then((response) => ({ feedId: feed.feedId, maxPostPubDate, response }));
   });
-  setTimeout(() => update(state), 5000);
+
+  Promise.all(updatePromises).then((results) => {
+    results.forEach(({ feedId, maxPostPubDate, response }) => {
+      const { posts } = rssParser(response.data.contents);
+      const newPosts = posts.filter((post) => post.pubDate > maxPostPubDate);
+      const newPostsWithId = newPosts.map((post) => ({ ...post, feedId, id: _.uniqueId('post_') }));
+
+      if (newPostsWithId.length > 0) {
+        state.unreadPosts.push(...newPostsWithId.map((post) => post.id));
+        state.posts.push(...newPostsWithId);
+      }
+    });
+
+    setTimeout(() => update(state), 5000);
+  });
 };
 
 export default update;

@@ -1,4 +1,6 @@
-import { string, setLocale } from 'yup';
+/* eslint-disable no-param-reassign */
+
+import { string } from 'yup';
 import i18next from 'i18next';
 import axios from 'axios';
 import _ from 'lodash';
@@ -8,25 +10,41 @@ import initView from './view.js';
 import rssParser from './rssParser.js';
 import update from './update.js';
 
+const validateForm = (formData, notOneOfArray) => {
+  const schema = string()
+    .url()
+    .notOneOf(notOneOfArray.map((item) => item.url));
+
+  return schema.validate(formData.url);
+};
+
+const handleLanguageChange = (lng, state, i18nInstance) => {
+  i18nInstance.changeLanguage(lng).then(() => {
+    state.lng = lng;
+  });
+};
+
 const languages = ['ru', 'en'];
 
 export default () => {
   const defaultLanguage = 'ru';
 
-  const i18nInstance = i18next.createInstance();
-  i18nInstance.init({
+  const initialState = {
     lng: defaultLanguage,
-    resources,
-  });
-
-  setLocale({
-    mixed: {
-      notOneOf: () => i18nInstance.t('error.notOneOf'),
+    formData: {
+      url: '',
     },
-    string: {
-      url: () => i18nInstance.t('error.url'),
+    errors: [],
+    process: 'filling', // "processing", "failed", "success"
+    feeds: [],
+    posts: [],
+    feedUrlList: [],
+    unreadPosts: [],
+    currentPreviewPost: {
+      title: '',
+      description: '',
     },
-  });
+  };
 
   const elements = {
     form: document.querySelector('.rss-form'),
@@ -52,98 +70,70 @@ export default () => {
     },
   };
 
-  const initialState = {
-    lng: '',
-    formData: {
-      url: '',
-    },
-    errors: [],
-    process: 'filling', // "processing", "failed", "success"
-    feeds: [],
-    posts: [],
-    feedUrlList: [],
-    unreadPosts: [],
-  };
-
-  const state = initView(elements, initialState, i18nInstance);
-
   languages.forEach((lng) => {
     const li = document.createElement('li');
     const button = document.createElement('button');
     button.classList.add('dropdown-item');
-    if (lng === defaultLanguage) {
-      button.classList.add('active');
-    }
     button.setAttribute('type', 'button');
     button.setAttribute('data-lng', lng);
-    button.textContent = i18nInstance.t(`languages.${lng}`);
     li.appendChild(button);
-    button.addEventListener('click', (e) => {
-      state.lng = e.target.dataset.lng;
-    });
     elements.languageSelection.appendChild(li);
   });
 
-  state.lng = defaultLanguage;
+  const i18nInstance = i18next.createInstance();
+  i18nInstance.init({
+    lng: defaultLanguage,
+    resources,
+  }).then(() => {
+    const state = initView(elements, initialState, i18nInstance);
 
-  const validateForm = () => {
-    const schema = string()
-      .url()
-      .notOneOf(state.feedUrlList.map((item) => item.url));
+    elements.fields.url.addEventListener('input', (e) => {
+      state.formData.url = e.target.value.trim();
+    });
 
-    return schema
-      .validate(state.formData.url)
-      .then()
-      .catch((err) => {
-        state.errors = err.errors;
-      });
-  };
+    elements.form.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-  elements.fields.url.addEventListener('input', (e) => {
-    state.formData.url = e.target.value.trim();
-  });
+      state.process = 'processing';
+      state.errors = [];
 
-  elements.form.addEventListener('submit', (e) => {
-    e.preventDefault();
+      validateForm(state.formData, state.feedUrlList)
+        .then(() => {
+          const url = new URL('https://allorigins.hexlet.app/get');
+          url.searchParams.set('disableCache', 'true');
+          url.searchParams.set('url', state.formData.url);
 
-    state.process = 'processing';
-    state.errors = [];
+          return axios
+            .get(url.toString())
+            .catch(() => {
+              throw new Error('Network Error');
+            });
+        })
+        .then((result) => {
+          const { feed, posts } = rssParser(result.data.contents);
+          feed.id = _.uniqueId('feed_');
 
-    validateForm()
-      .then(() => {
-        if (state.errors.length > 0) {
+          const postsWithId = posts.map((post) => ({ ...post, feedId: feed.id, id: _.uniqueId('post_') }));
+
+          state.feedUrlList.push({ feedId: feed.id, url: state.formData.url });
+          state.formData.url = '';
+          state.feeds.push(feed);
+          state.posts.push(...postsWithId);
+          state.unreadPosts.push(...postsWithId.map((post) => post.id));
+          state.process = 'success';
+        })
+        .catch((err) => {
+          state.errors.push(i18nInstance.t(`error.${err.name === 'ValidationError' ? err.type : err.message}`));
           state.process = 'failed';
-          throw new Error('validate failed');
-        }
+        });
+    });
 
-        return axios
-          .get(
-            `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(state.formData.url)}`,
-          )
-          .catch(() => {
-            throw new Error('Network Error');
-          });
-      })
-      .then((result) => {
-        const { feed, posts } = rssParser(result.data.contents);
-        feed.id = _.uniqueId('feed_');
-
-        const postsWithFeedId = posts.map((post) => ({ ...post, feedId: feed.id }));
-
-        state.feedUrlList.push({ feedId: feed.id, url: state.formData.url });
-        state.formData.url = '';
-        e.target.reset();
-        state.feeds.push(feed);
-        state.posts.push(...postsWithFeedId);
-        state.unreadPosts.push(...posts.map((post) => post.id));
-        state.process = 'success';
-      })
-      .catch((err) => {
-        console.log(err.message);
-        state.errors.push(i18nInstance.t(`error.${err.message}`));
-        state.process = 'failed';
+    elements.languageSelection.querySelectorAll('.dropdown-item').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        handleLanguageChange(e.target.dataset.lng, state, i18nInstance);
       });
-  });
+    });
 
-  setTimeout(() => update(state), 5000);
+    setTimeout(() => update(state), 5000);
+  });
 };

@@ -1,10 +1,12 @@
+/* eslint-disable no-param-reassign */
+
 import onChange from 'on-change';
 
-const render = (els, state, i18nInstance) => {
-  const elements = els;
+const render = (elements, state, i18nInstance) => {
   elements.feedback.textContent = '';
   elements.feeds.innerHTML = '';
   elements.posts.innerHTML = '';
+  elements.fields.url.value = state.formData.url;
 
   if (state.errors.length > 0) {
     elements.feedback.classList.remove('text-success');
@@ -20,6 +22,9 @@ const render = (els, state, i18nInstance) => {
     elements.feedback.classList.add('text-success');
     elements.feedback.textContent = i18nInstance.t('successMessage');
   }
+
+  elements.modal.title.textContent = state.currentPreviewPost.title;
+  elements.modal.body.textContent = state.currentPreviewPost.description;
 
   if (state.feeds.length > 0) {
     const feedCard = document.createElement('div');
@@ -111,16 +116,12 @@ const render = (els, state, i18nInstance) => {
       postButton.textContent = i18nInstance.t('postButton');
       postButton.addEventListener('click', (e) => {
         const postId = e.target.dataset.id;
-        const postCurrent = state.posts.find((item) => item.id === postId);
+        const currentPost = state.posts.find((item) => item.id === postId);
 
-        const state2 = state;
-        state2.unreadPosts = state2.unreadPosts.filter((item) => item !== postId);
-        const postCurrentA = document.querySelector(`a[data-id=${postId}]`);
-        postCurrentA.classList.remove('fw-bold');
-        postCurrentA.classList.add('fw-normal');
-
-        elements.modal.title.textContent = postCurrent.title;
-        elements.modal.body.textContent = postCurrent.description;
+        state.unreadPosts = state.unreadPosts.filter((item) => item !== postId);
+        state.currentPreviewPost.title = currentPost.title;
+        state.currentPreviewPost.description = currentPost.description;
+        render(elements, state, i18nInstance);
       });
 
       postLi.appendChild(postA);
@@ -133,41 +134,45 @@ const render = (els, state, i18nInstance) => {
     elements.posts.appendChild(postCard);
   }
 
+  document.title = i18nInstance.t('title');
+  elements.title.textContent = i18nInstance.t('title');
+  elements.lead.textContent = i18nInstance.t('lead');
+  elements.fields.url.placeholder = i18nInstance.t('input.placeholder');
+  elements.label.textContent = i18nInstance.t('input.label');
+  elements.submitButton.textContent = i18nInstance.t('button');
+  elements.example.textContent = i18nInstance.t('example');
+  elements.createdBy.textContent = i18nInstance.t('created by');
+  elements.author.textContent = i18nInstance.t('author');
+  elements.modal.btnRead.textContent = i18nInstance.t('modal.btnRead');
+  elements.modal.btnClose.textContent = i18nInstance.t('modal.btnClose');
+  if (elements.feeds.querySelector('.card-title')) {
+    elements.feeds.querySelector('.card-title').textContent = i18nInstance.t('feedsTitle');
+  }
+  if (elements.posts.querySelector('.card-title')) {
+    elements.posts.querySelector('.card-title').textContent = i18nInstance.t('postsTitle');
+  }
+
+  if (state.process === 'success') {
+    elements.feedback.textContent = i18nInstance.t('successMessage');
+  }
+
+  const postButtons = document.querySelectorAll('.posts .btn');
+  postButtons.forEach((btn) => {
+    const btnEl = btn;
+    btnEl.textContent = i18nInstance.t('postButton');
+  });
+
   const active = elements.languageSelection.querySelector('.active');
-  active.classList.remove('active');
+  if (active) {
+    active.classList.remove('active');
+  }
   const current = elements.languageSelection.querySelector(
     `[data-lng="${state.lng}"]`,
   );
   current.classList.add('active');
 
-  i18nInstance.changeLanguage(state.lng).then(() => {
-    document.title = i18nInstance.t('title');
-    elements.title.textContent = i18nInstance.t('title');
-    elements.lead.textContent = i18nInstance.t('lead');
-    elements.fields.url.placeholder = i18nInstance.t('input.placeholder');
-    elements.label.textContent = i18nInstance.t('input.label');
-    elements.submitButton.textContent = i18nInstance.t('button');
-    elements.example.textContent = i18nInstance.t('example');
-    elements.createdBy.textContent = i18nInstance.t('created by');
-    elements.author.textContent = i18nInstance.t('author');
-    elements.modal.btnRead.textContent = i18nInstance.t('modal.btnRead');
-    elements.modal.btnClose.textContent = i18nInstance.t('modal.btnClose');
-    if (elements.feeds.querySelector('.card-title')) {
-      elements.feeds.querySelector('.card-title').textContent = i18nInstance.t('feedsTitle');
-    }
-    if (elements.posts.querySelector('.card-title')) {
-      elements.posts.querySelector('.card-title').textContent = i18nInstance.t('postsTitle');
-    }
-
-    if (state.process === 'success') {
-      elements.feedback.textContent = i18nInstance.t('successMessage');
-    }
-
-    const postButtons = document.querySelectorAll('.posts .btn');
-    postButtons.forEach((btn) => {
-      const btnEl = btn;
-      btnEl.textContent = i18nInstance.t('postButton');
-    });
+  elements.languageSelection.querySelectorAll('.dropdown-item').forEach((el) => {
+    el.textContent = i18nInstance.t(`languages.${el.dataset.lng}`);
   });
 };
 
@@ -176,7 +181,8 @@ export default (elements, state, i18nInstance) => {
     switch (path) {
       case 'process':
       case 'lng':
-      case 'posts': {
+      case 'posts':
+      case 'unreadPosts': {
         render(elements, state, i18nInstance);
         break;
       }
@@ -184,5 +190,7 @@ export default (elements, state, i18nInstance) => {
         break;
     }
   });
+
+  render(elements, state, i18nInstance);
   return watchedState;
 };
