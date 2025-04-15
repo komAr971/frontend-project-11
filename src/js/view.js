@@ -1,8 +1,8 @@
+/* eslint-disable no-param-reassign */
+
 import onChange from 'on-change';
 
 const render = (elements, state, i18nInstance) => {
-  console.log(JSON.stringify(state));
-
   elements.feedback.textContent = '';
   elements.feeds.innerHTML = '';
   elements.posts.innerHTML = '';
@@ -172,8 +172,8 @@ const render = (elements, state, i18nInstance) => {
   current.classList.add('active');
 
   elements.languageSelection.querySelectorAll('.dropdown-item').forEach((el) => {
-    el.textContent = i18nInstance.t(`languages.${el.dataset.lng}`)
-  })
+    el.textContent = i18nInstance.t(`languages.${el.dataset.lng}`);
+  });
 };
 
 export default (elements, state, i18nInstance) => {
@@ -191,6 +191,6 @@ export default (elements, state, i18nInstance) => {
     }
   });
 
-  render(elements, state, i18nInstance)
+  render(elements, state, i18nInstance);
   return watchedState;
 };

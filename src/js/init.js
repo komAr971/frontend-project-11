@@ -1,4 +1,6 @@
-import { string, setLocale } from 'yup';
+/* eslint-disable no-param-reassign */
+
+import { string } from 'yup';
 import i18next from 'i18next';
 import axios from 'axios';
 import _ from 'lodash';
@@ -13,13 +15,13 @@ const validateForm = (formData, notOneOfArray) => {
     .url()
     .notOneOf(notOneOfArray.map((item) => item.url));
 
-  return schema.validate(formData.url)
+  return schema.validate(formData.url);
 };
 
 const handleLanguageChange = (lng, state, i18nInstance) => {
   i18nInstance.changeLanguage(lng).then(() => {
     state.lng = lng;
-  })
+  });
 }
 
 const languages = ['ru', 'en'];
@@ -41,7 +43,7 @@ export default () => {
     currentPreviewPost: {
       title: '',
       description: '',
-    }
+    },
   };
 
   const elements = {
@@ -76,7 +78,7 @@ export default () => {
     button.setAttribute('data-lng', lng);
     li.appendChild(button);
     elements.languageSelection.appendChild(li);
-  })
+  });
 
   const i18nInstance = i18next.createInstance();
   i18nInstance.init({
@@ -84,17 +86,17 @@ export default () => {
     resources,
   }).then(() => {
     const state = initView(elements, initialState, i18nInstance);
-  
+
     elements.fields.url.addEventListener('input', (e) => {
       state.formData.url = e.target.value.trim();
     });
-  
+
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
-  
+
       state.process = 'processing';
       state.errors = [];
-  
+
       validateForm(state.formData, state.feedUrlList)
         .then(() => {
           const url = new URL('https://allorigins.hexlet.app/get');
@@ -110,9 +112,9 @@ export default () => {
         .then((result) => {
           const { feed, posts } = rssParser(result.data.contents);
           feed.id = _.uniqueId('feed_');
-  
+
           const postsWithId = posts.map((post) => ({ ...post, feedId: feed.id, id: _.uniqueId('post_') }));
-  
+
           state.feedUrlList.push({ feedId: feed.id, url: state.formData.url });
           state.formData.url = '';
           state.feeds.push(feed);
@@ -127,12 +129,11 @@ export default () => {
     });
 
     elements.languageSelection.querySelectorAll('.dropdown-item').forEach((el) => {
-      console.log(el);
       el.addEventListener('click', (e) => {
         handleLanguageChange(e.target.dataset.lng, state, i18nInstance);
-      })
-    })
-  
+      });
+    });
+
     setTimeout(() => update(state), 5000);
   });
 };
