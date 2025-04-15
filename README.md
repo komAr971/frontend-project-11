@@ -7,8 +7,8 @@ This is my project, which I implemented as part of my study as a frontend progra
 ### Install
 
 ```bash
-$ git clone git@github.com:komAr971/frontend-project-11.git
-$ cd frontend-project-11
+$ git clone git@github.com:komAr971/rss-reader.git
+$ cd rss-reader
 $ make install
 ```
 
