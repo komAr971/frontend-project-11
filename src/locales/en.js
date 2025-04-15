@@ -8,7 +8,7 @@ export default {
       notOneOf: 'RSS already exists',
       url: 'The link must be a valid URL',
     },
-    title: 'RSS Aggregator',
+    title: 'RSS Reader',
     lead: 'Start reading RSS today! It\'s easy, it\'s beautiful.',
     input: {
       placeholder: 'RSS link',
@@ -19,7 +19,7 @@ export default {
     'created by': 'created by:',
     author: 'Konstantin Korostelev',
     postsTitle: 'Posts',
-    postButton: 'View',
+    postButton: 'Preview',
     feedsTitle: 'Feeds',
     successMessage: 'RSS successfully loaded',
     modal: {
