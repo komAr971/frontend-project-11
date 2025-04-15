@@ -8,8 +8,6 @@ import initView from './view.js';
 import rssParser from './rssParser.js';
 import update from './update.js';
 
-const languages = ['ru', 'en'];
-
 const validateForm = (formData, notOneOfArray) => {
   const schema = string()
     .url()
@@ -17,6 +15,14 @@ const validateForm = (formData, notOneOfArray) => {
 
   return schema.validate(formData.url)
 };
+
+const handleLanguageChange = (lng, state, i18nInstance) => {
+  i18nInstance.changeLanguage(lng).then(() => {
+    state.lng = lng;
+  })
+}
+
+const languages = ['ru', 'en'];
 
 export default () => {
   const defaultLanguage = 'ru';
@@ -32,6 +38,10 @@ export default () => {
     posts: [],
     feedUrlList: [],
     unreadPosts: [],
+    currentPreviewPost: {
+      title: '',
+      description: '',
+    }
   };
 
   const elements = {
@@ -58,28 +68,21 @@ export default () => {
     },
   };
 
+  languages.forEach((lng) => {
+    const li = document.createElement('li');
+    const button = document.createElement('button');
+    button.classList.add('dropdown-item');
+    button.setAttribute('type', 'button');
+    button.setAttribute('data-lng', lng);
+    li.appendChild(button);
+    elements.languageSelection.appendChild(li);
+  })
+
   const i18nInstance = i18next.createInstance();
   i18nInstance.init({
     lng: defaultLanguage,
     resources,
   }).then(() => {
-    languages.forEach((lng) => {
-      const li = document.createElement('li');
-      const button = document.createElement('button');
-      button.classList.add('dropdown-item');
-      if (lng === defaultLanguage) {
-        button.classList.add('active');
-      }
-      button.setAttribute('type', 'button');
-      button.setAttribute('data-lng', lng);
-      button.textContent = i18nInstance.t(`languages.${lng}`);
-      li.appendChild(button);
-      button.addEventListener('click', (e) => {
-        state.lng = e.target.dataset.lng;
-      });
-      elements.languageSelection.appendChild(li);
-    });
-    
     const state = initView(elements, initialState, i18nInstance);
   
     elements.fields.url.addEventListener('input', (e) => {
@@ -114,7 +117,7 @@ export default () => {
           state.formData.url = '';
           state.feeds.push(feed);
           state.posts.push(...postsWithId);
-          state.unreadPosts.push(...posts.map((post) => post.id));
+          state.unreadPosts.push(...postsWithId.map((post) => post.id));
           state.process = 'success';
         })
         .catch((err) => {
@@ -122,6 +125,13 @@ export default () => {
           state.process = 'failed';
         });
     });
+
+    elements.languageSelection.querySelectorAll('.dropdown-item').forEach((el) => {
+      console.log(el);
+      el.addEventListener('click', (e) => {
+        handleLanguageChange(e.target.dataset.lng, state, i18nInstance);
+      })
+    })
   
     setTimeout(() => update(state), 5000);
   });
