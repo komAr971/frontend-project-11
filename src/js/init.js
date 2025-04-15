@@ -22,7 +22,7 @@ const handleLanguageChange = (lng, state, i18nInstance) => {
   i18nInstance.changeLanguage(lng).then(() => {
     state.lng = lng;
   });
-}
+};
 
 const languages = ['ru', 'en'];
 
